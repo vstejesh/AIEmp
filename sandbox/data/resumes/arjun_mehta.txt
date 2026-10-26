@@ -1,0 +1,10 @@
+Arjun Mehta
+arjun.m@mail.test
+
+Summary: Recent graduate, strong in Java; picked up Python last year.
+
+Work
+* Junior Developer @ Brightside Apps (Sep 2024 - Sep 2025): Python/Flask APIs, ~1 year
+* Teaching Assistant, Data Structures (Java), 2023
+
+Education: B.Tech CSE, 2024

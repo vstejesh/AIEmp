@@ -1,0 +1,95 @@
+{
+  "id": "backend-screening",
+  "name": "Backend Engineer Screening",
+  "owner": "meera@acme.test",
+  "version": 2,
+  "scope": {
+    "source": "ats",
+    "filter": {
+      "role": "Backend Engineer",
+      "status": "New"
+    }
+  },
+  "steps": [
+    "Open the ATS and filter for Backend Engineer role with status New.",
+    "For each applicant, open their profile and read the resume file name to determine Python experience years and referral status.",
+    "Apply rules to determine if the applicant is rejected or booked for an interview.",
+    "If rejected, send rejection email after owner approval.",
+    "If booked, update ATS status to Interview and send invite email."
+  ],
+  "fields": [
+    {
+      "name": "python_years",
+      "type": "number",
+      "description": "Years of Python experience extracted from resume",
+      "options": [],
+      "source": "resume file name"
+    },
+    {
+      "name": "is_referral",
+      "type": "bool",
+      "description": "Whether the applicant was referred",
+      "options": [],
+      "source": "ATS applicant profile"
+    }
+  ],
+  "rules": [
+    {
+      "when": "is_referral == True",
+      "outcome": "book_interview"
+    },
+    {
+      "when": "python_years < 2",
+      "outcome": "reject_applicant"
+    },
+    {
+      "when": "else",
+      "outcome": "book_interview"
+    }
+  ],
+  "outcomes": {
+    "book_interview": [
+      "calendar.book",
+      "mail.send=interview_invite",
+      "ats.set_status=interview"
+    ],
+    "reject_applicant": [
+      "mail.send=rejection_notice",
+      "ats.set_status=rejected"
+    ]
+  },
+  "approval_required": [
+    "mail.send=rejection_notice"
+  ],
+  "constraints": {
+    "calendar.book": {
+      "days": [
+        "Tue",
+        "Wed",
+        "Thu"
+      ],
+      "hours": [
+        14,
+        15,
+        16
+      ]
+    }
+  },
+  "templates": {
+    "interview_invite": {
+      "to": "subject",
+      "subject": "Interview Invitation - Backend Engineer",
+      "body": "Hi {name}, we would like to invite you for a 30 minute call. You are scheduled for {slot}."
+    },
+    "rejection_notice": {
+      "to": "subject",
+      "subject": "Update on your application",
+      "body": "Hi {name}, thank you for your interest in the Backend Engineer role. We have decided not to move forward at this time."
+    }
+  },
+  "notes": [
+    "The resume file name is the only source for Python experience; if the file name does not contain this information, the AI cannot determine the experience level.",
+    "The prompt does not specify how to identify a referral; assuming this is a field in the ATS profile."
+  ],
+  "defaults": {}
+}

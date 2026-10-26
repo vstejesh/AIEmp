@@ -1,0 +1,97 @@
+{
+  "id": "backend-screening",
+  "name": "Backend Engineer Screening",
+  "owner": "meeru@acme.test",
+  "version": 4,
+  "scope": {
+    "source": "ats",
+    "filter": {
+      "role": "Backend Engineer",
+      "status": "New"
+    }
+  },
+  "steps": [
+    "Open the ATS and navigate to the New tab for Backend Engineer applicants.",
+    "For each applicant, open their profile and read the resume file name to determine Python experience years and referral status.",
+    "Apply the rules to determine if the applicant is rejected or invited to an interview.",
+    "If invited, book a slot on the calendar and send the invite email.",
+    "If rejected, draft the rejection email for owner approval.",
+    "Update the ATS status to Interview or Rejected accordingly."
+  ],
+  "fields": [
+    {
+      "name": "python_years",
+      "type": "number",
+      "description": "Years of Python experience extracted from resume",
+      "options": [],
+      "source": "resume file name"
+    },
+    {
+      "name": "is_referral",
+      "type": "bool",
+      "description": "Whether the applicant was referred",
+      "options": [],
+      "source": "applicant profile"
+    }
+  ],
+  "rules": [
+    {
+      "when": "is_referral == True",
+      "outcome": "interview_process"
+    },
+    {
+      "when": "python_years < 2",
+      "outcome": "rejection_process"
+    },
+    {
+      "when": "else",
+      "outcome": "interview_process"
+    }
+  ],
+  "outcomes": {
+    "interview_process": [
+      "calendar.book",
+      "mail.send=interview_invite",
+      "ats.set_status=interview"
+    ],
+    "rejection_process": [
+      "mail.send=rejection_notice",
+      "ats.set_status=rejected"
+    ]
+  },
+  "approval_required": [
+    "mail.send=rejection_notice"
+  ],
+  "constraints": {
+    "calendar.book": {
+      "days": [
+        "Tue",
+        "Wed",
+        "Thu"
+      ],
+      "hours": [
+        14,
+        15,
+        16,
+        17
+      ]
+    }
+  },
+  "templates": {
+    "interview_invite": {
+      "to": "subject",
+      "subject": "Interview Invitation - Backend Engineer",
+      "body": "Hi {name}, we would like to invite you for a 30-minute interview. Your slot is {slot}."
+    },
+    "rejection_notice": {
+      "to": "subject",
+      "subject": "Update on your application",
+      "body": "Hi {name}, thank you for your interest in the Backend Engineer role. Unfortunately, we will not be moving forward with your application at this time."
+    }
+  },
+  "notes": [
+    "The resume file name is assumed to contain the years of experience; if it does not, the AI cannot determine the value.",
+    "The definition of 'afternoon' is interpreted as 14:00 to 17:00 start times."
+  ],
+  "defaults": {}
+}

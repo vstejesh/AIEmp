@@ -1,0 +1,10 @@
+PRIYA NAIR  |  Bengaluru  |  priya.nair@mail.test
+
+EXPERIENCE
+Software Engineer, Zeta Labs                         Jul 2022 - Aug 2025
+  - Built payment reconciliation services in Python (Django, Celery)
+  - Owned PostgreSQL schema migrations for 40+ tables
+Intern, Zeta Labs                                     Jan 2022 - Jun 2022
+  - QA automation with Selenium (Java)
+
+SKILLS  Python, Django, PostgreSQL, Redis, Docker

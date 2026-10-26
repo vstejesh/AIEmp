@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Centra Workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6f8;--panel:#fff;--ink:#14171f;--mute:#6b7280;--line:#e6e8ec;--soft:#f0f2f5;
+--acc:#4f46e5;--acc-soft:#eef0ff;--ok:#0f8a4f;--ok-soft:#e7f6ee;--warn:#b45309;--warn-soft:#fff5e6;--bad:#c0262d;--bad-soft:#fdeceb}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1115;--panel:#171a21;--ink:#e8eaee;--mute:#9aa1ad;--line:#272b35;--soft:#1e222b;
+--acc:#8b8cff;--acc-soft:#23264a;--ok:#4cc38a;--ok-soft:#15291f;--warn:#f5b04a;--warn-soft:#2e2414;--bad:#ff7a7a;--bad-soft:#331a1c}}
+:root[data-theme=dark]{--bg:#0f1115;--panel:#171a21;--ink:#e8eaee;--mute:#9aa1ad;--line:#272b35;--soft:#1e222b;
+--acc:#8b8cff;--acc-soft:#23264a;--ok:#4cc38a;--ok-soft:#15291f;--warn:#f5b04a;--warn-soft:#2e2414;--bad:#ff7a7a;--bad-soft:#331a1c}
+*{box-sizing:border-box}html,body{margin:0}body{font:14px/1.5 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:var(--acc);text-decoration:none}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:4px 8px 18px}
+.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--acc),#a855f7);display:grid;place-items:center;color:#fff;font-weight:700}
+.nav{padding:8px 10px;border-radius:8px;color:var(--ink);cursor:pointer}
+.nav:hover{background:var(--soft)}.nav.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
+.navlabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding:14px 10px 4px}
+.recent{font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden}
+.recent:hover{background:var(--soft)}.recent span{overflow:hidden;text-overflow:ellipsis}
+.env{margin-top:auto;border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:var(--mute)}
+.env summary{cursor:pointer;padding:4px 10px}.env select{margin-top:6px}
+main{padding:28px 36px;max-width:1280px;width:100%}
+@media (max-width:860px){.app{grid-template-columns:1fr}aside{position:static;height:auto}main{padding:18px 16px}}
+h1{font-size:22px;margin:0 0 4px}.sub{color:var(--mute);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{margin:0 0 12px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);font-weight:600}
+.emp{display:flex;flex-direction:column;gap:12px}
+.who{display:flex;gap:12px;align-items:center}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:none}
+.who b{display:block;font-size:15px}.who small{color:var(--mute)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:6px}
+.stats{display:flex;gap:18px;color:var(--mute);font-size:12px}.stats b{color:var(--ink);font-size:15px;display:block}
+.tools{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:12px;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--mute)}
+input,textarea,select{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink)}
+textarea{min-height:150px;resize:vertical}input:focus,textarea:focus{outline:2px solid var(--acc-soft);border-color:var(--acc)}
+.btn{font:inherit;font-weight:600;padding:9px 16px;border-radius:9px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer;white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:default}.btn.ghost{background:transparent;color:var(--acc)}.btn.danger{background:var(--bad);border-color:var(--bad)}
+.row{display:flex;gap:8px;align-items:center}.row>input{flex:1}
+.newjob{border-style:dashed;display:grid;place-items:center;text-align:center;cursor:pointer;color:var(--mute);min-height:200px}
+.newjob:hover{border-color:var(--acc);color:var(--acc)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px}
+.p-running{background:var(--acc-soft);color:var(--acc)}.p-completed{background:var(--ok-soft);color:var(--ok)}
+.p-waiting_human{background:var(--warn-soft);color:var(--warn)}.p-failed,.p-verification_failed{background:var(--bad-soft);color:var(--bad)}
+.pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:p 1.2s infinite}@keyframes p{50%{opacity:.25}}
+table{border-collapse:collapse;width:100%}td,th{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:12px;color:var(--mute);font-weight:600}
+.runhead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.meta{color:var(--mute);font-size:13px;display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:16px}
+@media (max-width:1100px){.cols{grid-template-columns:1fr}}
+.ev{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:7px 0}
+.ic{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--soft)}
+.ev.write .ic{background:var(--acc-soft);color:var(--acc)}.ev.err .ic{background:var(--warn-soft);color:var(--warn)}
+.ev.human .ic{background:var(--ok-soft);color:var(--ok)}.ev.sec .ic{background:var(--bad-soft);color:var(--bad)}
+.ev .what{font-weight:500}.ev .why{color:var(--mute);font-size:13px}.tag{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--soft);color:var(--mute);margin-left:6px;font-weight:500}
+.ev details{font-size:12px;color:var(--mute)}.ev summary{cursor:pointer}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--soft);padding:8px;border-radius:8px;max-height:220px;overflow:auto;font:12px/1.45 ui-monospace,monospace}
+.screen{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--soft)}
+.screenbar{display:flex;gap:6px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--mute);background:var(--panel)}
+.screenbar i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
+.screen img{display:block;width:100%;aspect-ratio:1100/800;object-fit:cover;object-position:top}
+.needs{border:2px solid var(--warn);background:var(--warn-soft)}.needs h3{color:var(--warn)}
+.mailprev{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;font-size:13px}
+.verified{display:flex;gap:12px;align-items:center;padding:14px;border-radius:12px;background:var(--ok-soft);color:var(--ok);font-weight:600;margin-bottom:14px}
+.verified.no{background:var(--bad-soft);color:var(--bad)}.verified .big{font-size:24px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.mute{color:var(--mute)}
+.q{font-size:12px;color:var(--mute);font-style:italic}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.gallery img{width:100%;border-radius:8px;border:1px solid var(--line)}
+.sec{margin:14px 0}.sec h4{margin:0 0 6px;font-size:13px}.rule{display:flex;gap:8px;align-items:baseline;padding:5px 0;font-size:13px;flex-wrap:wrap}
+.rule code{background:var(--soft);padding:2px 7px;border-radius:6px;font-size:12px}
+ol{margin:0;padding-left:20px}li{margin:3px 0}
+.diff{white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace;background:var(--soft);padding:10px;border-radius:8px;max-height:280px;overflow:auto}
+.diff .a{color:var(--ok)}.diff .d{color:var(--bad)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;display:none;z-index:9}
+.empty{color:var(--mute);text-align:center;padding:30px}
+.progress{display:flex;gap:6px;flex-wrap:wrap}.progress span{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--soft)}
+.progress span.d{background:var(--ok-soft);color:var(--ok)}
+h3.gap{margin-top:18px}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><div class="logo">C</div>Centra</div>
+  <div class="nav" data-page="home" onclick="go('home')">AI employees</div>
+  <div class="nav" data-page="teach" onclick="go('teach')">Teach a new job</div>
+  <div class="nav" data-page="activity" onclick="go('activity')">Activity</div>
+  <div class="navlabel">Recent work</div>
+  <div id="recent"></div>
+  <details class="env"><summary>Demo environment</summary>
+    <div style="padding:4px 10px">Company situation for the next assignment<select id="scenario"></select></div>
+  </details>
+</aside>
+<main id="main"></main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const PERSONA = {
+  ats: {name: 'Raj', role: 'Recruitment Executive', dept: 'HR', color: '#6366f1', goal: "Process today's Backend applicants.", tools: ['ATS', 'Resumes', 'Calendar', 'Mail']},
+  helpdesk: {name: 'Yuvraj', role: 'Support Executive', dept: 'Customer Support', color: '#0ea5e9', goal: 'Handle the open support tickets.', tools: ['Helpdesk', 'Mail']},
+};
+const SITUATIONS = {clean: 'A normal morning', ambiguous: 'An applicant with unclear experience', lost_response: 'Calendar drops a confirmation',
+  slot_conflict: 'Someone grabs a slot mid-booking', injection: 'A resume tries to manipulate the AI', ui_changed: 'The ATS was redesigned overnight', support: 'Support inbox'};
+const EXAMPLES = {
+  recruit: {owner: 'meera@acme.test', id: 'backend-screening', text: `Every morning I go through new applications for the Backend Engineer role in the ATS (the "New" tab). Each applicant page has their resume file name; read the resume. Anyone with less than 2 years of Python experience gets rejected, unless they were referred, referrals always get a call. Everyone else gets a 30 minute call on my calendar, only Tuesday to Thursday afternoons (2pm to 5pm start times). Send them an invite email with the time. Move booked people to Interview and rejected people to Rejected in the ATS. Rejection emails go out only after I approve them.`},
+  support: {owner: 'dev@acme.test', id: 'support-triage', text: `I run first-line support. Every open ticket in the helpdesk needs handling. Password or login problems: reply with the reset steps (go to acme.test/reset, enter your email, follow the link) and close the ticket. Anything about billing, charges or refunds: never reply to the customer yourself, tag it finance and email me a heads-up with the ticket id. Bug reports: reply asking for steps to reproduce and their browser, tag it engineering, leave it open. Anything else: tag it triage and leave it for me.`},
+};
+let SOPS = [], RUNS = [], page = 'home', current = null, timer = null, lastKey = '', draft = null;
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, {headers: {'Content-Type': 'application/json'}, ...opts});
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.detail || r.statusText);
+  return d;
+}
+function toast(m) { const t = $('toast'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); }
+const persona = s => PERSONA[s?.scope?.source] || {name: (s?.name || '?')[0], role: s?.name || '', dept: '', color: '#64748b', goal: '', tools: []};
+const sopById = id => SOPS.find(s => s.id === id);
+const avatar = (p, n = 42) => `<div class="av" style="background:${p.color};width:${n}px;height:${n}px;font-size:${Math.round(n / 2.6)}px">${esc(p.name[0])}</div>`;
+const LABEL = {running: 'Working', waiting_human: 'Needs you', completed: 'Done · verified', failed: 'Paused', verification_failed: 'Not verified'};
+const statusPill = s => `<span class="pill p-${s}">${s === 'running' ? '<span class="pulse"></span>' : ''}${LABEL[s] || s}</span>`;
+const ago = t => { const s = Date.now() / 1000 - t; return s < 60 ? 'just now' : s < 3600 ? `${Math.round(s / 60)} min ago` : s < 86400 ? `${Math.round(s / 3600)} h ago` : `${Math.round(s / 86400)} d ago`; };
+const fmtSlot = s => { if (!s) return ''; const d = new Date(s); return d.toLocaleDateString(undefined, {weekday: 'short', day: 'numeric', month: 'short'}) + ', ' + d.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'}); };
+const pretty = s => String(s ?? '').replace(/[_.=+]/g, ' ').replace(/\s+/g, ' ').trim().replace(/^\w/, c => c.toUpperCase());
+
+function act(a) {  // human label for an SOP action
+  const [k, v] = String(a).split('=');
+  return ({'ats.set_status': `Moved to ${pretty(v)} in ATS`, 'calendar.book': 'Call booked', 'mail.send': `Sent ${pretty(v).toLowerCase()}`,
+    'helpdesk.reply': 'Replied', 'helpdesk.reply+close': 'Replied and closed', 'helpdesk.tag': `Tagged ${v}`})[k] || pretty(a);
+}
+async function refresh() {
+  [SOPS, RUNS] = await Promise.all([api('/api/sops'), api('/api/runs')]);
+  $('recent').innerHTML = RUNS.slice(0, 6).map(r => `<div class="recent" onclick="openRun('${r.id}')">${avatar(persona(sopById(r.sop_id)), 20)}<span>${esc(r.goal)}</span></div>`).join('')
+    || '<div class="recent mute">No work yet</div>';
+}
+function setNav(p) { document.querySelectorAll('.nav').forEach(n => n.classList.toggle('on', n.dataset.page === p)); }
+function go(p) { page = p; current = null; clearInterval(timer); setNav(p); ({home: renderHome, teach: renderTeach, activity: renderActivity})[p](); }
+
+// ------------------------------------------------------------------ AI employees
+function renderHome() {
+  const cards = SOPS.map(s => {
+    const p = persona(s), runs = RUNS.filter(r => r.sop_id === s.id), ok = runs.filter(r => r.status === 'completed').length;
+    return `<div class="card emp">
+      <div class="who">${avatar(p)}<div><b>${esc(p.name)} · ${esc(p.role)}</b><small><span class="dot"></span>${esc(p.dept)} · reports to ${esc(s.owner)}</small></div></div>
+      <div class="mute" style="font-size:13px">${esc(s.name)}: ${s.steps.length} steps, ${s.rules.length} rules${s.approval_required.length ? ', asks before ' + s.approval_required.map(act).join(', ').toLowerCase().replace(/^sent /, 'sending ') : ''}.</div>
+      <div class="stats"><div><b>${runs.length}</b>assignments</div><div><b>${ok}</b>verified</div><div><b>v${s.version}</b>SOP</div></div>
+      <div class="tools">${p.tools.map(t => `<span class="chip">${t}</span>`).join('')}</div>
+      <div class="row"><input id="goal-${s.id}" value="${esc(p.goal)}" aria-label="Goal"><button class="btn" onclick="assign('${s.id}')">Assign</button></div>
+    </div>`;
+  }).join('');
+  $('main').innerHTML = `<h1>Your AI employees</h1><p class="sub">Each one follows an SOP Centra learned from its manager. Give them an outcome, not steps.</p>
+    <div class="grid">${cards}<div class="card newjob" onclick="go('teach')"><div><div style="font-size:28px">+</div><b>Teach Centra a new job</b><br><small>Describe a process in your own words</small></div></div></div>`;
+}
+async function assign(id) {
+  const s = sopById(id);
+  let sc = $('scenario').value;
+  if (sc === '_keep') sc = null;
+  else if (s.scope.source === 'helpdesk') sc = 'support';
+  else if (sc === 'support') sc = 'clean';
+  try {
+    const d = await api('/api/runs', {method: 'POST', body: JSON.stringify({sop_id: id, goal: $('goal-' + id).value, scenario: sc})});
+    await refresh(); openRun(d.id);
+  } catch (e) { toast(e.message); }
+}
+
+// ------------------------------------------------------------------ teach
+function renderTeach() {
+  $('main').innerHTML = `<h1>Teach Centra a new job</h1><p class="sub">Explain the process the way you would to a new hire. Centra writes the SOP; nothing runs until you approve it.</p>
+  <div class="cols"><div class="card">
+    <h3>The process</h3>
+    <div class="row" style="margin-bottom:10px"><span class="mute" style="font-size:13px">Examples:</span>
+      <button class="btn ghost" onclick="example('recruit')">Hiring screen</button><button class="btn ghost" onclick="example('support')">Support triage</button></div>
+    <div class="row" style="margin-bottom:8px"><input id="owner" placeholder="Your email" value="${EXAMPLES.recruit.owner}"><input id="sopid" placeholder="Job id" value="${EXAMPLES.recruit.id}"></div>
+    <textarea id="desc">${esc(EXAMPLES.recruit.text)}</textarea>
+    <div style="margin-top:10px"><button class="btn" id="learnBtn" onclick="learn()">Have Centra learn this job</button></div>
+  </div><div id="sopReview"><div class="card empty">The SOP Centra writes appears here for your review.</div></div></div>`;
+}
+function example(k) { $('owner').value = EXAMPLES[k].owner; $('sopid').value = EXAMPLES[k].id; $('desc').value = EXAMPLES[k].text; }
+async function learn() {
+  const b = $('learnBtn'); b.disabled = true; b.textContent = 'Centra is reading…';
+  $('sopReview').innerHTML = '<div class="card empty"><span class="pill p-running"><span class="pulse"></span>Mapping the process</span></div>';
+  try {
+    const d = await api('/api/sops/learn', {method: 'POST', body: JSON.stringify({description: $('desc').value, owner: $('owner').value, id: $('sopid').value})});
+    draft = d.sop; $('sopReview').innerHTML = sopCard(d.sop, d.open_questions);
+  } catch (e) { $('sopReview').innerHTML = `<div class="card bad">${esc(e.message)}</div>`; }
+  b.disabled = false; b.textContent = 'Have Centra learn this job';
+}
+function sopCard(s, questions) {
+  const p = persona(s);
+  const cons = Object.entries(s.constraints || {}).map(([a, v]) => `${pretty(a)} only ${(v.days || []).join(', ')}${v.hours?.length ? ' at ' + v.hours.map(h => h + ':00').join(', ') : ''}`);
+  return `<div class="card">
+    <div class="who" style="margin-bottom:6px">${avatar(p)}<div><b>${esc(s.name)}</b><small>Owner ${esc(s.owner)} · covers ${esc(s.scope.source)} where ${esc(Object.entries(s.scope.filter || {}).map(([k, v]) => `${k} = ${v}`).join(', '))}</small></div></div>
+    <div class="sec"><h4>Steps</h4><ol>${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol></div>
+    <div class="sec"><h4>What it looks for</h4>${s.fields.map(f => `<div class="rule"><code>${esc(f.name)}</code><span class="mute">${esc(f.description)} (from ${esc(f.source)})</span></div>`).join('')}</div>
+    <div class="sec"><h4>Decision rules <span class="mute" style="font-weight:400">· first match wins · enforced in code</span></h4>
+      ${s.rules.map(r => `<div class="rule"><code>${esc(r.when)}</code><span class="mute">→</span><b>${esc(pretty(r.outcome))}</b><span class="mute">${esc((s.outcomes[r.outcome] || []).map(act).join(' · '))}</span></div>`).join('')}</div>
+    <div class="sec"><h4>Guardrails</h4>
+      <div class="rule">Needs approval: <b>${s.approval_required.length ? s.approval_required.map(pretty).join(', ') : 'nothing'}</b></div>
+      ${cons.map(x => `<div class="rule">${esc(x)}</div>`).join('')}${(s.notes || []).map(n => `<div class="rule mute">Note: ${esc(n)}</div>`).join('')}</div>
+    ${questions?.length ? `<div class="sec"><h4>Centra's open questions</h4><ul>${questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>` : ''}
+    <details><summary class="mute" style="cursor:pointer">Edit the SOP directly</summary><textarea id="draft" style="min-height:240px;font:12px ui-monospace,monospace">${esc(JSON.stringify(s, null, 1))}</textarea></details>
+    <div style="margin-top:12px"><button class="btn" onclick="hire()">Approve SOP & staff this job</button></div>
+  </div>`;
+}
+async function hire() {
+  try {
+    const s = await api('/api/sops/approve', {method: 'POST', body: JSON.stringify({sop: JSON.parse($('draft')?.value || JSON.stringify(draft))})});
+    await refresh(); toast(`${persona(s).name} now runs "${s.name}" (SOP v${s.version})`); go('home');
+  } catch (e) { toast(e.message); }
+}
+
+// ------------------------------------------------------------------ activity
+function renderActivity() {
+  $('main').innerHTML = `<h1>Activity</h1><p class="sub">Every assignment, with its outcome and evidence.</p><div class="card"><table>
+    <tr><th>Employee</th><th>Assignment</th><th>Status</th><th>When</th></tr>
+    ${RUNS.map(r => { const p = persona(sopById(r.sop_id)); return `<tr style="cursor:pointer" onclick="openRun('${r.id}')"><td><div class="who">${avatar(p, 26)}${esc(p.name)}</div></td><td>${esc(r.goal)}</td><td>${statusPill(r.status)}</td><td class="mute">${ago(r.created)}</td></tr>`; }).join('')
+      || '<tr><td colspan=4 class="empty">No work yet</td></tr>'}</table></div>`;
+}
+
+// ------------------------------------------------------------------ assignment view
+function openRun(id) { current = id; page = 'run'; lastKey = ''; clearInterval(timer); setNav(''); renderRun(); timer = setInterval(renderRun, 1800); }
+const titleOf = res => (/TITLE: (.*)/.exec(res || '') || [])[1] || '';
+function describe(e, subj) {
+  const a = e.args || {}, who = a.subject ? (subj[a.subject]?.name || a.subject) : '';
+  const tag = who ? `<span class="tag">${esc(who)}</span>` : '';
+  const first = (e.result || '').split('\n')[0];
+  if (!e.ok) {
+    const t = {blocked: 'Stopped by a guardrail', conflict: 'Hit a conflict, adapting', unknown_outcome: 'No confirmation received', not_found: 'Could not find that, looking again',
+      invalid_args: 'Corrected itself', transient: 'Temporary error, retrying'}[e.error_class] || 'Hit a problem';
+    return ['!', t + tag, esc(first.replace(/^BLOCKED by policy: /, '').slice(0, 220)), 'err'];
+  }
+  if (first.startsWith('saved:')) { const m = /saved: (\S+) for (\S+)/.exec(first) || []; return ['✓', esc(act(m[1])) + (m[2] ? `<span class="tag">${esc(subj[m[2]]?.name || m[2])}</span>` : ''), 'saved in the app', 'write']; }
+  switch (e.tool) {
+    case 'update_plan': return ['◇', 'Planned the work', esc((a.milestones || []).map(m => m.milestone).join(' → ')), ''];
+    case 'browser_open': case 'browser_click': case 'browser_read': return ['◎', 'Opened ' + esc(titleOf(e.result) || a.path || 'a page'), '', ''];
+    case 'browser_set': return ['✎', 'Filled in a field', `set to “${esc(a.value)}”`, ''];
+    case 'read_file': return ['▤', 'Read ' + esc(a.name), e.result.includes('[SECURITY]') ? '<span class="bad">contains hidden instructions, treated as untrusted</span>' : '', e.result.includes('[SECURITY]') ? 'sec' : ''];
+    case 'record_fact': return ['◆', `Noted ${esc(pretty(a.field).toLowerCase())}: <b>${esc(a.value)}</b>${tag}`, `<span class="q">“${esc(String(a.evidence).slice(0, 140))}”</span>${a.alternative_value != null ? ` · other reading: ${esc(a.alternative_value)}` : ''}`, ''];
+    case 'decide': { const m = /-> (\S+) \((.*?)\)\./.exec(e.result); return ['⚖', `Decided: <b>${esc(pretty(m ? m[1] : ''))}</b>${tag}`, m ? 'because ' + esc(m[2]) : '', 'write']; }
+    case 'calendar_free_slots': return ['◷', 'Checked calendar availability', '', ''];
+    case 'calendar_events': case 'mail_outbox': return ['⌕', 'Checked the system of record', esc((e.result.match(/RECONCILED:[^\n]*/g) || []).join(' ')), ''];
+    case 'calendar_book': return ['◷', `Booked a call for ${esc(fmtSlot(a.slot))}${tag}`, '', 'write'];
+    case 'mail_send': return e.result.includes('needs approval') ? ['✉', `Drafted ${esc(pretty(a.template).toLowerCase())}${tag}`, 'sent to you for approval', ''] : ['✉', `Sent ${esc(pretty(a.template).toLowerCase())}${tag}`, esc(first.replace(/^sent \S+ /, '')), 'write'];
+    case 'ask_human': return ['?', 'Asked you a question' + tag, esc(a.question), 'human'];
+    case 'report_sop_issue': return ['⚑', 'Flagged an SOP problem', esc(a.issue), 'err'];
+    case 'finish': return ['⚑', 'Reported the work as done', 'handed to the independent verifier', 'write'];
+  }
+  return ['•', esc(e.tool), '', ''];
+}
+function eventHtml(e, subj) {
+  if (e.kind !== 'step') {
+    const m = {start: ['▶', 'Started the assignment', ''], waiting_human: ['❚❚', 'Waiting for you', 'human'], human: ['✓', 'You responded', 'human'],
+      verifier: ['↻', 'Verifier found unfinished work, continuing', 'err'], verified: ['✓', 'Independently verified', 'human'],
+      verification_failed: ['✕', 'Verification failed', 'err'], failed: ['❚❚', 'Paused', 'err']}[e.kind] || ['•', e.kind, ''];
+    const text = e.kind === 'start' ? '' : e.kind === 'verifier' ? 'the real systems did not match yet' : e.text;
+    return `<div class="ev ${m[2]}"><div class="ic">${m[0]}</div><div><div class="what">${m[1]}</div><div class="why">${esc(text.slice(0, 260))}</div></div></div>`;
+  }
+  const [ic, what, why, cls] = describe(e, subj);
+  return `<div class="ev ${cls}"><div class="ic">${ic}</div><div><div class="what">${what}</div>${why ? `<div class="why">${why}</div>` : ''}
+    <details><summary>details</summary>${e.thought ? `<div style="margin:4px 0"><b>Reasoning:</b> ${esc(e.thought)}</div>` : ''}<pre>${esc(e.tool)} ${esc(JSON.stringify(e.args))}\n\n${esc((e.result || '').slice(0, 1500))}</pre>${e.shot ? `<a target=_blank href="/runs/${current}/shots/${e.shot}">screenshot</a>` : ''}</details></div></div>`;
+}
+async function renderRun() {
+  if (page !== 'run' || !current) return;
+  let r; try { r = await api(`/api/runs/${current}`); } catch { return; }
+  const live = ['running', 'waiting_human'].includes(r.status);
+  if (!live && !r.alive) clearInterval(timer);
+  const img = $('liveimg');
+  if (img && live) img.src = `/runs/${current}/shots/live.jpg?t=${Date.now()}`;
+  const key = r.status + r.log.length + JSON.stringify(r.pending || '');
+  if (key === lastKey) return;
+  lastKey = key; refresh();
+  const s = sopById(r.sop_id) || {}, p = persona(s), subj = r.scope || {}, u = r.usage || {};
+  const elapsed = Math.max(0, Math.round((r.log.at(-1)?.t || r.created) - r.created));
+  const handled = Object.keys(subj).filter(k => r.decisions?.[k]).length;
+  const noun = s.scope?.source === 'helpdesk' ? 'Ticket' : 'Applicant';
+
+  let needs = '';
+  if (r.pending && r.status === 'waiting_human') {
+    const q = r.pending;
+    needs = q.kind === 'question'
+      ? `<div class="card needs"><h3>${esc(p.name)} needs your judgement</h3><p>${esc(q.question)}</p><div class="row"><input id="ans" placeholder="Your answer"><button class="btn" onclick="answer(null)">Reply</button></div></div>`
+      : `<div class="card needs"><h3>Approval needed</h3><p><b>${esc(act(q.action))}</b> for ${esc(subj[q.subject]?.name || q.subject)}</p>
+         ${q.preview?.body ? `<div class="mailprev"><div class="mute">To: ${esc(q.preview.to)}</div><div><b>${esc(q.preview.subject)}</b></div><div style="margin-top:6px;white-space:pre-wrap">${esc(q.preview.body)}</div></div>` : `<pre>${esc(JSON.stringify(q.preview, null, 1))}</pre>`}
+         <div class="row"><button class="btn" onclick="answer(true)">Approve</button><button class="btn danger" onclick="answer(false)">Reject</button></div></div>`;
+  }
+  const rep = r.report, v = r.verification;
+  const report = rep ? `<div class="card"><h3>Work report</h3>
+    ${v ? `<div class="verified ${v.passed ? '' : 'no'}"><span class="big">${v.passed ? '✓' : '✕'}</span><div>${v.passed ? 'Verified by an independent check of the real systems' : 'The independent check found problems'}<div style="font-weight:400;font-size:13px">${v.checks.filter(c => c.ok).length} of ${v.checks.length} checks passed · the employee's own claim is never trusted</div></div></div>` : ''}
+    ${rep.problem && !v?.passed ? `<p class="bad">${esc(rep.problem)}</p>` : ''}
+    <table><tr><th>${noun}</th><th>Outcome</th><th>Based on</th></tr>
+    ${rep.subjects.map(x => `<tr><td><b>${esc(x.name)}</b><div class="mute">${esc(x.id)}</div></td>
+      <td>${esc(pretty(x.outcome) || 'Not handled')}${x.slot ? `<div class="mute">${esc(fmtSlot(x.slot))}</div>` : ''}<div class="mute" style="font-size:12px">${esc(x.actions_done.map(act).join(' · '))}</div></td>
+      <td>${Object.entries(x.facts).map(([k, f]) => `<div>${esc(pretty(k))}: <b>${esc(f.value)}</b> <span class="q">“${esc(String(f.evidence).slice(0, 70))}”</span></div>`).join('')}<div class="mute" style="font-size:12px">${esc(x.why || '')}</div></td></tr>`).join('')}</table>
+    ${rep.security_flags?.length ? `<h3 class="gap bad">Security</h3>${rep.security_flags.map(f => `<div class="ev sec"><div class="ic">!</div><div><div class="what">Instructions hidden in ${esc(f.source)} were ignored</div><div class="q">“${esc(f.excerpt)}”</div></div></div>`).join('')}` : ''}
+    ${rep.human_answers?.length ? `<h3 class="gap">Your input</h3>${rep.human_answers.map(h => `<div class="ev human"><div class="ic">✓</div><div><div class="why">${esc(h.question)}</div><div class="what">${esc(h.answer)}</div></div></div>`).join('')}` : ''}
+    ${rep.incidents?.length ? `<h3 class="gap">Handled along the way</h3>${rep.incidents.map(i => `<div class="ev err"><div class="ic">!</div><div class="why">${esc(i.detail.split('\n')[0].replace(/^BLOCKED by policy: /, 'Guardrail: '))}</div></div>`).join('')}` : ''}
+    ${rep.screenshots?.length ? `<h3 class="gap">Evidence</h3><div class="gallery">${rep.screenshots.map(x => `<a target=_blank href="/runs/${current}/shots/${x}"><img loading=lazy src="/runs/${current}/shots/${x}" alt="${esc(x)}"></a>`).join('')}</div>` : ''}
+    ${v ? `<details style="margin-top:14px"><summary class="mute" style="cursor:pointer">All ${v.checks.length} verification checks</summary><table>${v.checks.map(c => `<tr><td class="${c.ok ? 'ok' : 'bad'}">${c.ok ? '✓' : '✕'}</td><td>${esc(subj[c.subject]?.name || (c.subject === '*' ? 'Everything else' : c.subject))}</td><td>${esc(pretty(c.check))}</td><td class="mute">${esc(c.detail)}</td></tr>`).join('')}</table></details>` : ''}
+  </div>
+  <div class="card"><h3>Centra · manager review</h3><div id="review"><p class="mute">Centra reads this run and proposes SOP changes so the same problem does not happen again.</p><button class="btn ghost" onclick="review()">Review this run</button></div></div>` : '';
+
+  $('main').innerHTML = `
+  <div class="runhead"><div class="who">${avatar(p, 48)}<div><h1 style="margin:0">${esc(r.goal)}</h1>
+    <div class="meta"><span>${esc(p.name)} · ${esc(p.role)}</span><span>SOP v${r.sop_version}</span><span>${elapsed}s</span><span>${r.steps} actions</span><span>$${(u.est_cost_usd || 0).toFixed(3)} model cost</span></div></div></div>
+    <div>${statusPill(r.status)}</div></div>
+  ${r.status === 'failed' ? `<div class="card needs" style="margin-bottom:16px"><h3>Paused</h3><p>The model provider was unavailable. Progress is saved.</p><button class="btn" onclick="resume()">Resume where it stopped</button></div>` : ''}
+  <div class="cols">
+    <div class="card"><h3>What ${esc(p.name)} is doing</h3>
+      <div class="progress">${Object.entries(subj).map(([k, x]) => `<span class="${r.decisions?.[k] ? 'd' : ''}">${r.decisions?.[k] ? '✓ ' : ''}${esc(x.name)}</span>`).join('')}</div>
+      <div class="mute" style="font-size:12px;margin:6px 0 10px">${handled} of ${Object.keys(subj).length} handled</div>
+      ${r.log.slice().reverse().map(e => eventHtml(e, subj)).join('')}</div>
+    <div class="stack">${needs}
+      ${live ? `<div class="card"><h3>Live view</h3><div class="screen"><div class="screenbar"><i></i><i></i><i></i>&nbsp;${esc((r.last_url || '').replace(/^https?:\/\/[^/]+/, '') || 'browser')}</div><img id="liveimg" src="/runs/${current}/shots/live.jpg?t=${Date.now()}" onerror="this.style.opacity=.15" alt="The employee's browser"></div></div>` : ''}
+      ${r.plan?.length ? `<div class="card"><h3>Plan</h3><ol>${r.plan.map(m => `<li>${esc(m.milestone)}${m.done_when ? `<div class="mute" style="font-size:12px">done when ${esc(m.done_when)}</div>` : ''}</li>`).join('')}</ol></div>` : ''}
+      ${report}
+    </div>
+  </div>`;
+}
+function poll() { lastKey = ''; clearInterval(timer); renderRun(); timer = setInterval(renderRun, 1800); }
+async function answer(approve) {
+  try { await api(`/api/runs/${current}/answer`, {method: 'POST', body: JSON.stringify({response: $('ans')?.value || '', approve})}); poll(); } catch (e) { toast(e.message); }
+}
+async function resume() { try { await api(`/api/runs/${current}/resume`, {method: 'POST'}); poll(); } catch (e) { toast(e.message); } }
+async function review() {
+  $('review').innerHTML = '<span class="pill p-running"><span class="pulse"></span>Centra is reviewing the run</span>';
+  try {
+    const d = await api(`/api/runs/${current}/review`, {method: 'POST'});
+    if (!d.changes?.length) { $('review').innerHTML = `<p class="ok">✓ ${esc(d.note === 'clean run; nothing to change' ? 'This run went to plan. No SOP changes needed.' : (d.note || 'No SOP changes needed.'))}</p>`; return; }
+    window._proposal = d.sop;
+    const diff = esc(d.diff).split('\n').map(l => /^\+(?!\+\+)/.test(l) ? `<span class="a">${l}</span>` : /^-(?!--)/.test(l) ? `<span class="d">${l}</span>` : l).join('\n');
+    $('review').innerHTML = `<p><b>Centra proposes ${d.changes.length} SOP change${d.changes.length > 1 ? 's' : ''}:</b></p>
+      ${d.changes.map(c => `<div class="ev"><div class="ic">⚑</div><div><div class="what">${esc(c.what)}</div><div class="why">${esc(c.why)}</div></div></div>`).join('')}
+      <details><summary class="mute" style="cursor:pointer">Exact change</summary><div class="diff">${diff}</div></details>
+      <div style="margin-top:10px"><button class="btn" onclick="applyFix()">Approve change</button></div>`;
+  } catch (e) { $('review').innerHTML = `<p class="bad">${esc(e.message)}</p>`; }
+}
+async function applyFix() {
+  try { const s = await api('/api/sops/approve', {method: 'POST', body: JSON.stringify({sop: window._proposal})}); await refresh();
+    $('review').innerHTML = `<p class="ok">✓ SOP updated to v${s.version}. ${esc(persona(s).name)} follows it from the next assignment.</p>`; } catch (e) { toast(e.message); }
+}
+
+(async () => {
+  const sc = await api('/api/scenarios');
+  $('scenario').innerHTML = `<option value="_keep">Keep current state</option>` + sc.map(x => `<option value="${x}" ${x === 'clean' ? 'selected' : ''}>${esc(SITUATIONS[x] || x)}</option>`).join('');
+  await refresh(); go('home');
+})();
+</script>
+</body>
+</html>

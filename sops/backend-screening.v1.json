@@ -1,0 +1,99 @@
+{
+  "id": "backend-screening",
+  "name": "Backend Engineer Screening",
+  "owner": "meera@acme.test",
+  "version": 1,
+  "scope": {
+    "source": "ats",
+    "filter": {
+      "role": "Backend Engineer",
+      "status": "New"
+    }
+  },
+  "steps": [
+    "Access the ATS and filter for 'Backend Engineer' roles in the 'New' status.",
+    "Open each applicant's profile and locate the resume file.",
+    "Review the resume to determine the total years of Python experience.",
+    "Check the applicant profile or resume for any indication of a referral.",
+    "Apply the screening rules to determine if the candidate should be interviewed or rejected.",
+    "For interviews: Book a 30-minute slot on the calendar during allowed hours, update the ATS status to Interview, and send the invitation email.",
+    "For rejections: Update the ATS status to Rejected and queue the rejection email for owner approval."
+  ],
+  "fields": [
+    {
+      "name": "python_experience_years",
+      "type": "number",
+      "description": "The total number of years of Python experience found in the resume.",
+      "options": [],
+      "source": "resume"
+    },
+    {
+      "name": "is_referred",
+      "type": "bool",
+      "description": "Whether the candidate was referred by someone.",
+      "options": [],
+      "source": "applicant profile or resume"
+    }
+  ],
+  "rules": [
+    {
+      "when": "is_referred == true",
+      "outcome": "interview"
+    },
+    {
+      "when": "python_experience_years < 2",
+      "outcome": "reject"
+    },
+    {
+      "when": "else",
+      "outcome": "interview"
+    }
+  ],
+  "outcomes": {
+    "interview": [
+      "calendar.book",
+      "ats.set_status=interview",
+      "mail.send=interview_invite"
+    ],
+    "reject": [
+      "ats.set_status=rejected",
+      "mail.send=rejection_email"
+    ]
+  },
+  "approval_required": [
+    "mail.send=rejection_email"
+  ],
+  "constraints": {
+    "calendar.book": {
+      "days": [
+        "Tue",
+        "Wed",
+        "Thu"
+      ],
+      "hours": [
+        14,
+        15,
+        16,
+        17
+      ]
+    }
+  },
+  "templates": {
+    "interview_invite": {
+      "to": "subject",
+      "subject": "Interview Invitation: Backend Engineer Role",
+      "body": "Hi {name}, we'd like to invite you for a 30-minute call. Your slot is booked for {slot}. {note} {subject_id}"
+    },
+    "rejection_email": {
+      "to": "subject",
+      "subject": "Application Update: Backend Engineer Role",
+      "body": "Hi {name}, thank you for your interest. Unfortunately, we are not moving forward with your application at this time. {slot} {note} {subject_id}"
+    }
+  },
+  "notes": [
+    "Referrals bypass the Python experience requirement.",
+    "Rejection emails require manual approval from Meera before being sent.",
+    "Interview slots are 30 minutes long."
+  ],
+  "defaults": {}
+}

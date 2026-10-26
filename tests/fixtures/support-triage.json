@@ -1,0 +1,83 @@
+{
+  "id": "support-triage",
+  "name": "First-Line Support Triage",
+  "owner": "dev@acme.test",
+  "version": 1,
+  "scope": {
+    "source": "helpdesk",
+    "filter": {
+      "status": "open"
+    }
+  },
+  "steps": [
+    "Open the Helpdesk ticket list filtered to open tickets.",
+    "Review the customer's message to classify the issue type: password/login problems, billing/charges/refunds, bug report, or other.",
+    "If password or login problem: post reply with reset instructions (acme.test/reset) and close ticket.",
+    "If billing, charges, or refunds: do not reply to the customer; add the 'finance' tag and send an email alert to the owner with the ticket ID.",
+    "If bug report: post reply asking for reproduction steps and browser info, add the 'engineering' tag, and leave the ticket open.",
+    "If anything else: add the 'triage' tag and leave open for the owner."
+  ],
+  "fields": [
+    {
+      "name": "issue_type",
+      "type": "enum",
+      "description": "Classification of the customer issue based on message content",
+      "options": [
+        "password_login",
+        "billing",
+        "bug_report",
+        "other"
+      ],
+      "source": "Ticket subject and body"
+    }
+  ],
+  "rules": [
+    {
+      "when": "issue_type == 'password_login'",
+      "outcome": "handle_password_reset"
+    },
+    {
+      "when": "issue_type == 'billing'",
+      "outcome": "handle_billing"
+    },
+    {
+      "when": "issue_type == 'bug_report'",
+      "outcome": "handle_bug_report"
+    },
+    {
+      "when": "else",
+      "outcome": "handle_other"
+    }
+  ],
+  "outcomes": {
+    "handle_password_reset": [
+      "helpdesk.reply+close"
+    ],
+    "handle_billing": [
+      "helpdesk.tag=finance",
+      "mail.send=billing_alert"
+    ],
+    "handle_bug_report": [
+      "helpdesk.reply",
+      "helpdesk.tag=engineering"
+    ],
+    "handle_other": [
+      "helpdesk.tag=triage"
+    ]
+  },
+  "approval_required": [],
+  "constraints": {},
+  "templates": {
+    "billing_alert": {
+      "to": "owner",
+      "subject": "Billing issue alert: Ticket {subject_id}",
+      "body": "Heads-up: Ticket {subject_id} involves billing, charges, or refunds and requires your attention."
+    }
+  },
+  "notes": [
+    "Password/login reply must include: go to acme.test/reset, enter email, follow the link.",
+    "Never reply to the customer on billing/charge/refund tickets.",
+    "Bug reports require asking for steps to reproduce and browser."
+  ],
+  "defaults": {}
+}
